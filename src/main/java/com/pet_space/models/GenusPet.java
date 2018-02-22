@@ -5,12 +5,20 @@ import java.util.Objects;
 public class GenusPet {
     private String name;
 
+    public GenusPet() {
+    }
+
     public GenusPet(String name) {
         this.name = name;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public GenusPet setName(String name) {
+        this.name = name;
+        return this;
     }
 
     @Override

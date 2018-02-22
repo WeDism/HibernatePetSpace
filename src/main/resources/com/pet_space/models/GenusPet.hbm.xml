@@ -1,0 +1,5 @@
+<hibernate-mapping>
+    <class name="com.pet_space.models.GenusPet" table="genus_pet">
+        <id name="name" column="name"/>
+    </class>
+</hibernate-mapping>
