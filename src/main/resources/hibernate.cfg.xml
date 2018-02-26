@@ -7,7 +7,5 @@
         <property name="connection.password">postgres</property>
         <property name="dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
         <property name="show_sql">true</property>
-
-        <mapping resource="com/pet_space/models/GenusPet.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

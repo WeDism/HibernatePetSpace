@@ -1,8 +1,15 @@
 package com.pet_space.models;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table(name = "genus_pet")
 public class GenusPet {
+
+    @Id
     private String name;
 
     public GenusPet() {

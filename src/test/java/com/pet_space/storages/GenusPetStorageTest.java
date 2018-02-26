@@ -1,17 +1,14 @@
 package com.pet_space.storages;
 
-import com.pet_space.models.GenusPet;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 
-import static com.pet_space.storages.GenusPetStorageTestData.*;
-import static org.hamcrest.CoreMatchers.*;
+import static com.pet_space.storages.GenusPetStorageTestData.GENUS_CAT;
+import static com.pet_space.storages.GenusPetStorageTestData.GENUS_DOG;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-public class GenusPetStorageTest {
-    final GenusPetStorage genusPetStorage = GenusPetStorage.getInstance();
+public class GenusPetStorageTest extends DbInit{
 
     @Test
     public void getInstance() {
@@ -42,7 +39,8 @@ public class GenusPetStorageTest {
     public void delete() {
         this.genusPetStorage.add(GENUS_CAT);
         this.genusPetStorage.add(GENUS_DOG);
-
+        assertTrue(this.genusPetStorage.contains(GENUS_CAT).isPresent());
+        assertTrue(this.genusPetStorage.contains(GENUS_CAT).isPresent());
         this.genusPetStorage.delete(GENUS_CAT);
         assertFalse(this.genusPetStorage.contains(GENUS_CAT).isPresent());
         assertTrue(this.genusPetStorage.contains(GENUS_DOG).isPresent());
