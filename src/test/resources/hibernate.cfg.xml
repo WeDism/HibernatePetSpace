@@ -14,5 +14,6 @@
         <mapping class="com.pet_space.models.essences.StatusEssence"/>
         <mapping class="com.pet_space.models.essences.RoleEssence"/>
         <mapping class="com.pet_space.models.essences.UserEssence"/>
+        <mapping class="com.pet_space.models.Pet"/>
     </session-factory>
 </hibernate-configuration>

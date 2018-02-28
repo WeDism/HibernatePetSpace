@@ -7,13 +7,31 @@ import com.pet_space.models.essences.UserEssence;
 import java.util.UUID;
 
 public interface UserEssenceStorageTestData {
-    UserEssence USER_ESSENCE_DIMON = UserEssence.builder()
-            .nickname("didi")
-            .name("Dimon")
-            .surname("Di")
+    UserEssence USER_ESSENCE_JOHN = UserEssence.builder()
+            .nickname("jo")
+            .name("John")
+            .surname("Jo")
             .role(new RoleEssence(RoleEssence.RoleEssenceEnum.ADMIN))
             .statusEssence(new StatusEssence(StatusEssence.StatusEssenceEnum.ACTIVE))
-            .email("di@di.com")
+            .email("jo@jo.com")
+            .password("pass")
+            .build();
+    UserEssence USER_ESSENCE_FRED = UserEssence.builder()
+            .nickname("fred")
+            .name("Fred")
+            .surname("Fr")
+            .role(new RoleEssence(RoleEssence.RoleEssenceEnum.USER))
+            .statusEssence(new StatusEssence(StatusEssence.StatusEssenceEnum.ACTIVE))
+            .email("fr@fr.com")
+            .password("pass")
+            .build();
+    UserEssence USER_ESSENCE_SIMON = UserEssence.builder()
+            .nickname("sai")
+            .name("Simon")
+            .surname("Si")
+            .role(new RoleEssence(RoleEssence.RoleEssenceEnum.USER))
+            .statusEssence(new StatusEssence(StatusEssence.StatusEssenceEnum.ACTIVE))
+            .email("si@si.com")
             .password("pass")
             .build();
 }

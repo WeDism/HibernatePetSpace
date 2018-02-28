@@ -1,15 +1,12 @@
 package com.pet_space.models.essences;
 
+import com.pet_space.models.Pet;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -32,7 +29,8 @@ public class UserEssence {
     private String aboutOfSelf;
     private RoleEssence role;
     private StatusEssence statusEssence;
-
+    private Set<Pet> pets = new HashSet<>();
+    private Set<Pet> followByPets = new HashSet<>();
 
     public UserEssence() {
     }
@@ -146,6 +144,31 @@ public class UserEssence {
 
     public void setBirthday(LocalDateTime birthday) {
         this.birthday = birthday;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
+    public Set<Pet> getPets() {
+        return this.pets;
+    }
+
+    public UserEssence setPets(Set<Pet> pets) {
+        this.pets = pets;
+        return this;
+    }
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "follow_pets",
+            joinColumns = {@JoinColumn(name = "user_essence_id")},
+            inverseJoinColumns = {@JoinColumn(name = "pet_id")}
+    )
+    public Set<Pet> getFollowByPets() {
+        return this.followByPets;
+    }
+
+    public UserEssence setFollowByPets(Set<Pet> followByPets) {
+        this.followByPets = followByPets;
+        return this;
     }
 
     @Override

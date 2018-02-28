@@ -30,7 +30,8 @@ public class StatusEssenceStorage {
         }
     }
 
-    public Optional contains(StatusEssence statusEssence) {
+    @SuppressWarnings("unchecked")
+    public Optional<StatusEssence> contains(StatusEssence statusEssence) {
         try (Session session = this.sessionFactory.openSession()) {
             Query query = session.createQuery("from StatusEssence se where se.id=:name");
             query.setParameter("name", statusEssence.getStatusEssenceEnum());

@@ -3,6 +3,7 @@ package com.pet_space.storages;
 import com.pet_space.models.essences.UserEssence;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,15 +38,30 @@ public class UserEssenceStorage {
         }
     }
 
-    public Optional<UserEssence> findById(UUID id) {
-        Optional<UserEssence> result = Optional.empty();
+    @SuppressWarnings("unchecked")
+    public Optional<UserEssence> findByCredential(String username, String password) {
         try (Session session = this.sessionFactory.openSession()) {
-            UserEssence user = session.get(UserEssence.class, id);
-            if (user != null) {
-                result = Optional.of(user);
-            }
+            Query query = session.createQuery(
+                    "from UserEssence as ue join fetch ue.role join fetch ue.statusEssence where ue.nickname=:username and ue.password=:password"
+            );
+            query.setParameter("username", username);
+            query.setParameter("password", password);
+            return query.uniqueResultOptional();
         }
-        return result;
+    }
+
+    public Optional<UserEssence> findById(UserEssence userEssence) {
+        return this.findById(userEssence.getUserEssenceId());
+    }
+
+    public Optional<UserEssence> findById(UUID id) {
+        try (Session session = this.sessionFactory.openSession()) {
+            return Optional.of(session.get(UserEssence.class, id));
+        }
+    }
+
+    public void delete(UserEssence userEssence) {
+        this.delete(userEssence.getUserEssenceId());
     }
 
     public void delete(UUID id) {

@@ -1,36 +1,142 @@
 package com.pet_space.models;
 
+import com.pet_space.models.essences.UserEssence;
+import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "pet")
 public class Pet {
     private UUID petId;
     private String name;
     private Double weight;
     private LocalDateTime birthday;
-    private UUID owner;
+    private UserEssence owner;
     private GenusPet genusPet;
+    private Set<UserEssence> followersPet = new HashSet<>();
 
-    private Pet() {
+    public Pet() {
     }
 
-    public static IPetId builder() {
+    public static IName builder() {
         return new BuilderPet();
     }
 
-    public static class BuilderPet implements IPetId, IName, IOwner, IGenusPet, IBuild {
-        Pet pet = new Pet();
+    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "pet_id", columnDefinition = "uuid")
+    public UUID getPetId() {
+        return this.petId;
+    }
 
-        @Override
-        public IName petId(@NotNull UUID petId) {
-            this.pet.setPetId(petId);
-            return this;
-        }
+    public Pet setPetId(UUID petId) {
+        this.petId = petId;
+        return this;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Pet setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Double getWeight() {
+        return this.weight;
+    }
+
+    public Pet setWeight(Double weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_essence_id")
+    public UserEssence getOwner() {
+        return this.owner;
+    }
+
+    public Pet setOwner(UserEssence owner) {
+        this.owner = owner;
+        return this;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "genus")
+    public GenusPet getGenusPet() {
+        return this.genusPet;
+    }
+
+    public Pet setGenusPet(GenusPet genusPet) {
+        this.genusPet = genusPet;
+        return this;
+    }
+
+    public LocalDateTime getBirthday() {
+        return this.birthday;
+    }
+
+    public Pet setBirthday(LocalDateTime birthday) {
+        this.birthday = birthday;
+        return this;
+    }
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "followByPets", fetch = FetchType.EAGER)
+    public Set<UserEssence> getFollowersPet() {
+        return this.followersPet;
+    }
+
+    public Pet setFollowersPet(Set<UserEssence> followersPet) {
+        this.followersPet = followersPet;
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pet)) return false;
+        Pet pet = (Pet) o;
+        return Objects.equals(this.getPetId(), pet.getPetId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getPetId());
+    }
+
+    public interface IName {
+        IOwner name(@NotNull String name);
+    }
+
+    public interface IOwner {
+        IGenusPet owner(@NotNull UserEssence owner);
+    }
+
+    public interface IGenusPet {
+        IBuild genusPet(GenusPet genusPet);
+    }
+
+    public interface IBuild {
+        IBuild weight(Double weight);
+
+        IBuild birthday(LocalDateTime birthday);
+
+        Pet build();
+    }
+
+    public static class BuilderPet implements IName, IOwner, IGenusPet, IBuild {
+        Pet pet = new Pet();
 
         @Override
         public IOwner name(@NotNull String name) {
@@ -39,7 +145,7 @@ public class Pet {
         }
 
         @Override
-        public IGenusPet owner(@NotNull UUID owner) {
+        public IGenusPet owner(@NotNull UserEssence owner) {
             this.pet.setOwner(owner);
             return this;
         }
@@ -52,7 +158,7 @@ public class Pet {
 
         @Override
         public Pet build() {
-            Set<?> setArguments = Set.of(this.pet.petId, this.pet.name, this.pet.owner, this.pet.genusPet);
+            Set<?> setArguments = Set.of(this.pet.name, this.pet.owner, this.pet.genusPet);
             if (setArguments.stream().anyMatch(Objects::isNull)) {
                 throw new IllegalArgumentException(
                         String.format("The arguments(%s) are null", setArguments.stream().filter(Objects::isNull).collect(Collectors.toList())));
@@ -71,96 +177,5 @@ public class Pet {
             this.pet.setBirthday(birthday);
             return this;
         }
-    }
-
-    public interface IPetId {
-        IName petId(@NotNull UUID petId);
-    }
-
-    public interface IName {
-        IOwner name(@NotNull String name);
-    }
-
-    public interface IOwner {
-        IGenusPet owner(@NotNull UUID owner);
-    }
-
-    public interface IGenusPet {
-        IBuild genusPet(GenusPet genusPet);
-    }
-
-    public interface IBuild {
-        IBuild weight(Double weight);
-
-        IBuild birthday(LocalDateTime birthday);
-
-        Pet build();
-    }
-
-    public UUID getPetId() {
-        return this.petId;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public Double getWeight() {
-        return this.weight;
-    }
-
-    public UUID getOwner() {
-        return this.owner;
-    }
-
-    public GenusPet getGenusPet() {
-        return this.genusPet;
-    }
-
-    public LocalDateTime getBirthday() {
-        return this.birthday;
-    }
-
-    public Pet setPetId(UUID petId) {
-        this.petId = petId;
-        return this;
-    }
-
-    public Pet setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Pet setWeight(Double weight) {
-        this.weight = weight;
-        return this;
-    }
-
-    public Pet setBirthday(LocalDateTime birthday) {
-        this.birthday = birthday;
-        return this;
-    }
-
-    public Pet setOwner(UUID owner) {
-        this.owner = owner;
-        return this;
-    }
-
-    public Pet setGenusPet(GenusPet genusPet) {
-        this.genusPet = genusPet;
-        return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Pet)) return false;
-        Pet pet = (Pet) o;
-        return Objects.equals(this.getPetId(), pet.getPetId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.getPetId());
     }
 }

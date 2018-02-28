@@ -30,7 +30,8 @@ public class RoleEssenceStorage {
         }
     }
 
-    public Optional contains(RoleEssence roleEssence) {
+    @SuppressWarnings("unchecked")
+    public Optional<RoleEssence> contains(RoleEssence roleEssence) {
         try (Session session = this.sessionFactory.openSession()) {
             Query query = session.createQuery("from RoleEssence re where re.id=:name");
             query.setParameter("name", roleEssence.getRoleEssenceEnum());
