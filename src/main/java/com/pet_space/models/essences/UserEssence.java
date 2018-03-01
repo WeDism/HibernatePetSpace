@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "user_essence")
-public class UserEssence {
+public class UserEssence implements Cloneable {
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -31,6 +31,8 @@ public class UserEssence {
     private StatusEssence statusEssence;
     private Set<Pet> pets = new HashSet<>();
     private Set<Pet> followByPets = new HashSet<>();
+    private Set<Friends> requestedFriendsFrom = new HashSet<>();
+    private Set<Friends> requestedFriendsTo = new HashSet<>();
 
     public UserEssence() {
     }
@@ -171,6 +173,26 @@ public class UserEssence {
         return this;
     }
 
+    @OneToMany(mappedBy = "primaryKey.userEssence", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Set<Friends> getRequestedFriendsFrom() {
+        return this.requestedFriendsFrom;
+    }
+
+    public UserEssence setRequestedFriendsFrom(Set<Friends> requestedFriendsFrom) {
+        this.requestedFriendsFrom = requestedFriendsFrom;
+        return this;
+    }
+
+    @OneToMany(mappedBy = "primaryKey.friend", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Set<Friends> getRequestedFriendsTo() {
+        return this.requestedFriendsTo;
+    }
+
+    public UserEssence setRequestedFriendsTo(Set<Friends> requestedFriendsTo) {
+        this.requestedFriendsTo = requestedFriendsTo;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -182,6 +204,48 @@ public class UserEssence {
     @Override
     public int hashCode() {
         return Objects.hash(getUserEssenceId());
+    }
+
+    @Override
+    public UserEssence clone() throws CloneNotSupportedException {
+        UserEssence clone = (UserEssence) super.clone();
+
+        clone.aboutOfSelf = this.aboutOfSelf;
+        clone.birthday = this.birthday;
+        clone.email = this.email;
+        Set<Pet> followByPets = new HashSet<>();
+        for (Pet pet : this.followByPets) {
+            followByPets.add(pet.clone());
+        }
+        clone.followByPets = followByPets;
+        clone.name = this.name;
+        clone.nickname = this.nickname;
+        clone.password = this.password;
+        clone.patronymic = this.patronymic;
+
+        Set<Pet> pets = new HashSet<>();
+        for (Pet pet : this.pets) {
+            pets.add(pet.clone());
+        }
+        clone.pets = new HashSet<>(pets);
+
+        Set<Friends> friendsFrom = new HashSet<>();
+        for (Friends friend : this.requestedFriendsFrom) {
+            friendsFrom.add(friend.clone());
+        }
+        clone.requestedFriendsFrom = friendsFrom;
+
+        Set<Friends> friendsTo = new HashSet<>();
+        for (Friends friend : this.requestedFriendsTo) {
+            friendsTo.add(friend.clone());
+        }
+        clone.requestedFriendsTo = friendsTo;
+
+        clone.role = this.role.clone();
+        clone.statusEssence = this.statusEssence.clone();
+        clone.surname = this.surname;
+        clone.userEssenceId = this.userEssenceId;
+        return clone;
     }
 
     public interface INickname {

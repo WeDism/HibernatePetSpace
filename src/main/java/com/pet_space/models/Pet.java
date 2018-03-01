@@ -13,8 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "pet")
-public class Pet {
+public class Pet implements Cloneable {
     private UUID petId;
     private String name;
     private Double weight;
@@ -108,6 +107,23 @@ public class Pet {
         if (!(o instanceof Pet)) return false;
         Pet pet = (Pet) o;
         return Objects.equals(this.getPetId(), pet.getPetId());
+    }
+
+    @Override
+    public Pet clone() throws CloneNotSupportedException {
+        Pet clone = (Pet) super.clone();
+        clone.birthday = this.birthday;
+        HashSet<UserEssence> users = new HashSet<>();
+        for (UserEssence userEssence : this.followersPet) {
+            users.add(userEssence.clone());
+        }
+        clone.followersPet = users;
+        clone.genusPet = this.genusPet.clone();
+        clone.name = this.name;
+        clone.owner = this.owner.clone();
+        clone.petId = this.petId;
+        clone.weight = this.weight;
+        return clone;
     }
 
     @Override

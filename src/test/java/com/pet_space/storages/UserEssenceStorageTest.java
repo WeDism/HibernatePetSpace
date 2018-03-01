@@ -1,6 +1,8 @@
 package com.pet_space.storages;
 
 import com.pet_space.models.Pet;
+import com.pet_space.models.essences.Friends;
+import com.pet_space.models.essences.StateFriend;
 import com.pet_space.models.essences.UserEssence;
 import org.junit.After;
 import org.junit.Before;
@@ -9,12 +11,14 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.pet_space.storages.GenusPetStorageTestData.GENUS_CAT;
 import static com.pet_space.storages.GenusPetStorageTestData.GENUS_DOG;
 import static com.pet_space.storages.PetStorageTestData.*;
 import static com.pet_space.storages.RoleEssenceStorageTestData.ROLE_ESSENCE_ADMIN;
 import static com.pet_space.storages.RoleEssenceStorageTestData.ROLE_ESSENCE_USER;
+import static com.pet_space.storages.StateFriendStorageTestData.*;
 import static com.pet_space.storages.StatusEssenceStorageTestData.STATUS_ESSENCE_ACTIVE;
 import static com.pet_space.storages.UserEssenceStorageTestData.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,6 +35,10 @@ public class UserEssenceStorageTest extends DbInit {
         this.roleEssenceStorage.add(ROLE_ESSENCE_USER);
 
         this.statusEssenceStorage.add(STATUS_ESSENCE_ACTIVE);
+
+        this.stateFriendStorage.add(STATE_FRIEND_APPROVED);
+        this.stateFriendStorage.add(STATE_FRIEND_REJECTED);
+        this.stateFriendStorage.add(STATE_FRIEND_REQUESTED);
 
         this.userEssenceStorage.add(USER_ESSENCE_JOHN);
         this.userEssenceStorage.add(USER_ESSENCE_SIMON);
@@ -94,6 +102,42 @@ public class UserEssenceStorageTest extends DbInit {
         byId = this.petStorage.findById(PET_PERS);
         assertTrue(byId.isPresent());
         assertThat(byId.get().getFollowersPet().size(), is(0));
+    }
+
+    @Test
+    public void friendRequest() throws CloneNotSupportedException {
+        UserEssence userEssenceJohn = USER_ESSENCE_JOHN.clone().setUserEssenceId(UUID.randomUUID()).setNickname("JOHN_CLONE");
+        UserEssence userEssenceFred = USER_ESSENCE_FRED.clone().setUserEssenceId(UUID.randomUUID()).setNickname("FRED_CLONE");
+
+        this.userEssenceStorage.add(userEssenceJohn);
+        this.userEssenceStorage.add(userEssenceFred);
+
+        Friends friends = new Friends()
+                .setUserEssence(userEssenceJohn)
+                .setFriend(userEssenceFred)
+                .setState(new StateFriend(StateFriend.StateFriendEnum.REQUESTED));
+
+        userEssenceJohn.getRequestedFriendsFrom().add(friends);
+        userEssenceFred.getRequestedFriendsTo().add(friends);
+
+        this.userEssenceStorage.update(userEssenceJohn);
+        this.userEssenceStorage.update(userEssenceFred);
+
+        Optional<UserEssence> userEssenceOptionalJohn = this.userEssenceStorage.findById(userEssenceJohn);
+        assertTrue(userEssenceOptionalJohn.isPresent());
+        assertThat(userEssenceOptionalJohn.get().getRequestedFriendsFrom().size(), is(1));
+
+        Optional<UserEssence> userEssenceOptionalFred = this.userEssenceStorage.findById(userEssenceFred);
+        assertTrue(userEssenceOptionalFred.isPresent());
+        assertThat(userEssenceOptionalFred.get().getRequestedFriendsTo().size(), is(1));
+
+        userEssenceOptionalJohn = this.userEssenceStorage.findById(userEssenceJohn);
+        assertTrue(userEssenceOptionalJohn.isPresent());
+        assertThat(userEssenceOptionalJohn.get().getRequestedFriendsFrom().size(), is(1));
+
+        this.friendsStorage.delete(friends);
+        this.userEssenceStorage.delete(userEssenceJohn);
+        this.userEssenceStorage.delete(userEssenceFred);
     }
 
     @Test

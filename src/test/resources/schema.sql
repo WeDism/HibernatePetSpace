@@ -40,7 +40,7 @@ CREATE TABLE state_friend (
 CREATE TABLE friends (
   user_essence_id UUID REFERENCES user_essence (user_essence_id),
   friend_id       UUID REFERENCES user_essence (user_essence_id),
-  status          VARCHAR(100) NOT NULL REFERENCES state_friend (state),
+  state          VARCHAR(100) NOT NULL REFERENCES state_friend (state),
   CONSTRAINT pk_friends_id PRIMARY KEY (user_essence_id, friend_id)
 );
 

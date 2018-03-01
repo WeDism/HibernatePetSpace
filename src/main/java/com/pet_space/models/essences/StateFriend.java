@@ -1,5 +1,54 @@
 package com.pet_space.models.essences;
 
-public enum StateFriend {
-    REQUESTED, REJECTED, APPROVED
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
+@Table(name = "state_friend")
+public class StateFriend implements Cloneable {
+    public enum StateFriendEnum {
+        REQUESTED, REJECTED, APPROVED
+    }
+
+    @Id
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private StateFriendEnum stateFriendEnum;
+
+    public StateFriend() {
+    }
+
+    public StateFriend(StateFriendEnum stateFriendEnum) {
+        super();
+        this.stateFriendEnum = stateFriendEnum;
+    }
+
+    public StateFriendEnum getStateFriendEnum() {
+        return this.stateFriendEnum;
+    }
+
+    public StateFriend setStateFriendEnum(StateFriendEnum stateFriendEnum) {
+        this.stateFriendEnum = stateFriendEnum;
+        return this;
+    }
+
+    @Override
+    protected StateFriend clone() throws CloneNotSupportedException {
+        StateFriend clone = (StateFriend) super.clone();
+        clone.stateFriendEnum = this.stateFriendEnum;
+        return clone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StateFriend)) return false;
+        StateFriend that = (StateFriend) o;
+        return getStateFriendEnum() == that.getStateFriendEnum();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStateFriendEnum());
+    }
 }

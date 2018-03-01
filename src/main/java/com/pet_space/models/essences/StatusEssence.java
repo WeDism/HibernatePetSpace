@@ -5,10 +5,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "status_essence")
-public class StatusEssence {
+public class StatusEssence implements Cloneable {
     public enum StatusEssenceEnum {
         INACTIVE, DELETED, ACTIVE
     }
+
     @Id
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -26,8 +27,16 @@ public class StatusEssence {
         return this.statusEssenceEnum;
     }
 
-    public void setStatusEssenceEnum(StatusEssenceEnum statusEssenceEnum) {
+    public StatusEssence setStatusEssenceEnum(StatusEssenceEnum statusEssenceEnum) {
         this.statusEssenceEnum = statusEssenceEnum;
+        return this;
+    }
+
+    @Override
+    protected StatusEssence clone() throws CloneNotSupportedException {
+        StatusEssence clone = (StatusEssence) super.clone();
+        clone.statusEssenceEnum = this.statusEssenceEnum;
+        return clone;
     }
 
     @Override

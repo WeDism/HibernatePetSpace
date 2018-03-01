@@ -8,6 +8,8 @@ public abstract class DbInit {
     protected final UserEssenceStorage userEssenceStorage = UserEssenceStorage.getInstance();
     protected final StatusEssenceStorage statusEssenceStorage = StatusEssenceStorage.getInstance();
     protected final PetStorage petStorage = PetStorage.getInstance();
+    protected final StateFriendStorage stateFriendStorage = StateFriendStorage.getInstance();
+    protected final FriendsStorage friendsStorage = FriendsStorage.getInstance();
 
     protected DbInit() {
         new Configuration()

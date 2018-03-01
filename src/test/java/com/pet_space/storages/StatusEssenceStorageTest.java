@@ -22,14 +22,6 @@ public class StatusEssenceStorageTest extends DbInit {
     }
 
     @Test
-    public void add() {
-        assertTrue(this.statusEssenceStorage.contains(STATUS_ESSENCE_ACTIVE).isPresent());
-        assertTrue(this.statusEssenceStorage.contains(STATUS_ESSENCE_DELETED).isPresent());
-        assertTrue(this.statusEssenceStorage.contains(STATUS_ESSENCE_INACTIVE).isPresent());
-
-    }
-
-    @Test
     public void contains() {
         assertTrue(this.statusEssenceStorage.contains(STATUS_ESSENCE_ACTIVE).isPresent());
         assertTrue(this.statusEssenceStorage.contains(STATUS_ESSENCE_DELETED).isPresent());

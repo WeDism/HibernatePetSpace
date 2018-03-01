@@ -7,5 +7,13 @@
         <property name="connection.password">postgres</property>
         <property name="dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
         <property name="show_sql">true</property>
+
+        <mapping class="com.pet_space.models.essences.StateFriend"/>
+        <mapping class="com.pet_space.models.essences.StatusEssence"/>
+        <mapping class="com.pet_space.models.essences.RoleEssence"/>
+        <mapping class="com.pet_space.models.essences.Friends"/>
+        <mapping class="com.pet_space.models.essences.UserEssence"/>
+        <mapping class="com.pet_space.models.GenusPet"/>
+        <mapping class="com.pet_space.models.Pet"/>
     </session-factory>
 </hibernate-configuration>

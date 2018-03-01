@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "genus_pet")
-public class GenusPet {
+public class GenusPet implements Cloneable {
 
     @Id
     private String name;
@@ -26,6 +26,13 @@ public class GenusPet {
     public GenusPet setName(String name) {
         this.name = name;
         return this;
+    }
+
+    @Override
+    protected GenusPet clone() throws CloneNotSupportedException {
+        GenusPet clone = (GenusPet) super.clone();
+        clone.name = this.name;
+        return clone;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "role_essence")
-public class RoleEssence {
+public class RoleEssence implements Cloneable {
     public enum RoleEssenceEnum {
         ROOT, ADMIN, USER
     }
@@ -29,6 +29,13 @@ public class RoleEssence {
 
     public void setRoleEssenceEnum(RoleEssenceEnum roleEssenceEnum) {
         this.roleEssenceEnum = roleEssenceEnum;
+    }
+
+    @Override
+    protected RoleEssence clone() throws CloneNotSupportedException {
+        RoleEssence clone = (RoleEssence) super.clone();
+        clone.roleEssenceEnum = this.roleEssenceEnum;
+        return clone;
     }
 
     @Override
