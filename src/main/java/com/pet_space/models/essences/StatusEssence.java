@@ -1,11 +1,12 @@
 package com.pet_space.models.essences;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "status_essence")
-public class StatusEssence implements Cloneable {
+public class StatusEssence implements Serializable {
     public enum StatusEssenceEnum {
         INACTIVE, DELETED, ACTIVE
     }
@@ -30,13 +31,6 @@ public class StatusEssence implements Cloneable {
     public StatusEssence setStatusEssenceEnum(StatusEssenceEnum statusEssenceEnum) {
         this.statusEssenceEnum = statusEssenceEnum;
         return this;
-    }
-
-    @Override
-    protected StatusEssence clone() throws CloneNotSupportedException {
-        StatusEssence clone = (StatusEssence) super.clone();
-        clone.statusEssenceEnum = this.statusEssenceEnum;
-        return clone;
     }
 
     @Override

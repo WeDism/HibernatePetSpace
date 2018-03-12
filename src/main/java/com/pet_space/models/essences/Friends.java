@@ -1,8 +1,7 @@
 package com.pet_space.models.essences;
 
-import org.hibernate.internal.util.Cloneable;
-
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -11,7 +10,7 @@ import java.util.Objects;
                 joinColumns = @JoinColumn(name = "user_essence_id")),
         @AssociationOverride(name = "primaryKey.friend",
                 joinColumns = @JoinColumn(name = "friend_id"))})
-public class Friends extends Cloneable {
+public class Friends implements Serializable {
     private FriendId primaryKey = new FriendId();
     private StateFriend state;
 
@@ -54,14 +53,6 @@ public class Friends extends Cloneable {
     public Friends setFriend(UserEssence userEssence) {
         this.primaryKey.setFriend(userEssence);
         return this;
-    }
-
-    @Override
-    protected Friends clone() throws CloneNotSupportedException {
-        Friends clone = (Friends) super.clone();
-        clone.primaryKey = this.primaryKey.clone();
-        clone.state = this.state.clone();
-        return clone;
     }
 
     @Override

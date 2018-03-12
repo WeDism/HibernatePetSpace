@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class FriendId implements Serializable, Cloneable {
+public class FriendId implements Serializable {
     private UserEssence userEssence;
     private UserEssence friend;
 
@@ -29,14 +29,6 @@ public class FriendId implements Serializable, Cloneable {
     public FriendId setFriend(UserEssence friend) {
         this.friend = friend;
         return this;
-    }
-
-    @Override
-    protected FriendId clone() throws CloneNotSupportedException {
-        FriendId clone = (FriendId) super.clone();
-        clone.userEssence = this.userEssence.clone();
-        clone.friend = this.friend.clone();
-        return clone;
     }
 
     @Override

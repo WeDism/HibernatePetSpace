@@ -4,7 +4,7 @@ import com.pet_space.models.Pet;
 import com.pet_space.models.essences.Friends;
 import com.pet_space.models.essences.StateFriend;
 import com.pet_space.models.essences.UserEssence;
-import org.hibernate.Hibernate;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.pet_space.storages.GenusPetStorageTestData.GENUS_CAT;
 import static com.pet_space.storages.GenusPetStorageTestData.GENUS_DOG;
@@ -22,6 +23,7 @@ import static com.pet_space.storages.RoleEssenceStorageTestData.ROLE_ESSENCE_USE
 import static com.pet_space.storages.StateFriendStorageTestData.*;
 import static com.pet_space.storages.StatusEssenceStorageTestData.STATUS_ESSENCE_ACTIVE;
 import static com.pet_space.storages.UserEssenceStorageTestData.*;
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
@@ -50,6 +52,9 @@ public class UserEssenceStorageTest extends DbInit {
         this.petStorage.add(PET_TIMON);
         this.petStorage.add(PET_TOSH);
 
+        USER_ESSENCE_JOHN.setPets(SET_PETS.stream().filter((e) -> e.getOwner().equals(USER_ESSENCE_JOHN)).collect(Collectors.toSet()));
+        USER_ESSENCE_SIMON.setPets(SET_PETS.stream().filter((e) -> e.getOwner().equals(USER_ESSENCE_SIMON)).collect(Collectors.toSet()));
+        USER_ESSENCE_FRED.setPets(SET_PETS.stream().filter((e) -> e.getOwner().equals(USER_ESSENCE_FRED)).collect(Collectors.toSet()));
     }
 
     @Test
@@ -106,12 +111,31 @@ public class UserEssenceStorageTest extends DbInit {
     }
 
     @Test
-    public void friendRequest() throws CloneNotSupportedException {
-        UserEssence userEssenceJohn = USER_ESSENCE_JOHN.clone().setUserEssenceId(UUID.randomUUID()).setNickname("JOHN_CLONE");
-        UserEssence userEssenceFred = USER_ESSENCE_FRED.clone().setUserEssenceId(UUID.randomUUID()).setNickname("FRED_CLONE");
+    public void friendRequest() {
+        UserEssence userEssenceJohn = SerializationUtils.clone(USER_ESSENCE_JOHN).setUserEssenceId(randomUUID()).setNickname("JOHN_CLONE");
+        Set<Pet> petsJohn = userEssenceJohn.getPets();
+        userEssenceJohn.setPets(Set.of());
 
+        UserEssence userEssenceFred = SerializationUtils.clone(USER_ESSENCE_FRED).setUserEssenceId(randomUUID()).setNickname("FRED_CLONE");
+        Set<Pet> petsFred = userEssenceFred.getPets();
+        userEssenceFred.setPets(Set.of());
         this.userEssenceStorage.add(userEssenceJohn);
         this.userEssenceStorage.add(userEssenceFred);
+
+        petsJohn.forEach(e -> {
+            e.setPetId(randomUUID());
+            e.setOwner(userEssenceJohn);
+        });
+        petsJohn.forEach(this.petStorage::add);
+        userEssenceJohn.setPets(petsJohn);
+
+        petsFred.forEach(e -> {
+            e.setPetId(randomUUID());
+            e.setOwner(userEssenceFred);
+        });
+        petsFred.forEach(this.petStorage::add);
+        userEssenceFred.setPets(petsFred);
+
 
         Friends friends = new Friends()
                 .setUserEssence(userEssenceJohn)
@@ -137,8 +161,10 @@ public class UserEssenceStorageTest extends DbInit {
         assertThat(userEssenceOptionalJohn.get().getRequestedFriendsFrom().size(), is(1));
 
         this.friendsStorage.delete(friends);
-        this.userEssenceStorage.delete(userEssenceJohn);
-        this.userEssenceStorage.delete(userEssenceFred);
+        petsJohn.forEach(this.petStorage::delete);
+        petsFred.forEach(this.petStorage::delete);
+        this.userEssenceStorage.delete(this.userEssenceStorage.findById(userEssenceJohn).get());
+        this.userEssenceStorage.delete(this.userEssenceStorage.findById(userEssenceFred).get());
     }
 
     @Test
@@ -160,6 +186,10 @@ public class UserEssenceStorageTest extends DbInit {
         this.genusPetStorage.delete(GENUS_CAT);
         this.genusPetStorage.delete(GENUS_DOG);
 
+        USER_ESSENCE_JOHN.setPets(Set.of());
+        USER_ESSENCE_SIMON.setPets(Set.of());
+        USER_ESSENCE_FRED.setPets(Set.of());
+
         this.userEssenceStorage.delete(USER_ESSENCE_JOHN);
         this.userEssenceStorage.delete(USER_ESSENCE_SIMON);
         this.userEssenceStorage.delete(USER_ESSENCE_FRED);
@@ -168,6 +198,5 @@ public class UserEssenceStorageTest extends DbInit {
 
         this.roleEssenceStorage.delete(ROLE_ESSENCE_ADMIN);
         this.roleEssenceStorage.delete(ROLE_ESSENCE_USER);
-
     }
 }

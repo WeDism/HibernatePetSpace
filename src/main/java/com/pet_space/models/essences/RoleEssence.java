@@ -1,11 +1,12 @@
 package com.pet_space.models.essences;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "role_essence")
-public class RoleEssence implements Cloneable {
+public class RoleEssence implements Serializable {
     public enum RoleEssenceEnum {
         ROOT, ADMIN, USER
     }
@@ -29,13 +30,6 @@ public class RoleEssence implements Cloneable {
 
     public void setRoleEssenceEnum(RoleEssenceEnum roleEssenceEnum) {
         this.roleEssenceEnum = roleEssenceEnum;
-    }
-
-    @Override
-    protected RoleEssence clone() throws CloneNotSupportedException {
-        RoleEssence clone = (RoleEssence) super.clone();
-        clone.roleEssenceEnum = this.roleEssenceEnum;
-        return clone;
     }
 
     @Override

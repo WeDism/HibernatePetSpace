@@ -1,11 +1,12 @@
 package com.pet_space.models.essences;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "state_friend")
-public class StateFriend implements Cloneable {
+public class StateFriend implements Serializable {
     public enum StateFriendEnum {
         REQUESTED, REJECTED, APPROVED
     }
@@ -30,13 +31,6 @@ public class StateFriend implements Cloneable {
     public StateFriend setStateFriendEnum(StateFriendEnum stateFriendEnum) {
         this.stateFriendEnum = stateFriendEnum;
         return this;
-    }
-
-    @Override
-    protected StateFriend clone() throws CloneNotSupportedException {
-        StateFriend clone = (StateFriend) super.clone();
-        clone.stateFriendEnum = this.stateFriendEnum;
-        return clone;
     }
 
     @Override

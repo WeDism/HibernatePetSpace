@@ -5,12 +5,13 @@ import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-public class Pet implements Cloneable {
+public class Pet implements Serializable {
     private UUID petId;
     private String name;
     private Double weight;
@@ -104,23 +105,6 @@ public class Pet implements Cloneable {
         if (!(o instanceof Pet)) return false;
         Pet pet = (Pet) o;
         return Objects.equals(this.getPetId(), pet.getPetId());
-    }
-
-    @Override
-    public Pet clone() throws CloneNotSupportedException {
-        Pet clone = (Pet) super.clone();
-        clone.birthday = this.birthday;
-        HashSet<UserEssence> users = new HashSet<>();
-        for (UserEssence userEssence : this.followersPet) {
-            users.add(userEssence.clone());
-        }
-        clone.followersPet = users;
-        clone.genusPet = this.genusPet.clone();
-        clone.name = this.name;
-        clone.owner = this.owner.clone();
-        clone.petId = this.petId;
-        clone.weight = this.weight;
-        return clone;
     }
 
     @Override
