@@ -4,6 +4,7 @@ import com.pet_space.models.Pet;
 import com.pet_space.models.essences.Friends;
 import com.pet_space.models.essences.StateFriend;
 import com.pet_space.models.essences.UserEssence;
+import org.hibernate.Hibernate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

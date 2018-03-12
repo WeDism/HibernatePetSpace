@@ -6,10 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -60,7 +57,7 @@ public class Pet implements Cloneable {
         return this;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_essence_id")
     public UserEssence getOwner() {
         return this.owner;
@@ -174,7 +171,7 @@ public class Pet implements Cloneable {
 
         @Override
         public Pet build() {
-            Set<?> setArguments = Set.of(this.pet.name, this.pet.owner, this.pet.genusPet);
+            List<?> setArguments = Arrays.asList(this.pet.name, this.pet.owner, this.pet.genusPet);
             if (setArguments.stream().anyMatch(Objects::isNull)) {
                 throw new IllegalArgumentException(
                         String.format("The arguments(%s) are null", setArguments.stream().filter(Objects::isNull).collect(Collectors.toList())));
